@@ -75,5 +75,5 @@ jobs:
 
       - name: Push image to Docker Hub
         run: docker push chetouiiftikhar/frontoff-img:${{ github.sha }}
-        # Push latest tag only if it was built
-        when: steps.tag-image.outputs == ''  # Empty output means no error occurred
+       
+       
