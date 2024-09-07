@@ -6,7 +6,7 @@ on:
 
 
 jobs:
-  build:
+  Test:
     runs-on: ubuntu-latest
 
     steps:
@@ -15,4 +15,4 @@ jobs:
         with:
           node-version: 18
       - run: npm i
-      - run: npm run test
+      - run: ng test
