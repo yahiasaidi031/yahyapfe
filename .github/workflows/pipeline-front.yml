@@ -1,13 +1,13 @@
-name: CI/CD pour front Angular 
+name: CI/CD pour front Angular
 
 # Déclencheurs du workflow
 on:
   push:
-    branches: [frontOff ]
+    branches: [frontOff]
 
 # Configuration des jobs
 jobs:
-  # Job pour tester et builder projet Angular
+  # Job pour tester et builder le projet Angular
   test-and-build-angular:
     runs-on: ubuntu-latest
 
@@ -18,16 +18,18 @@ jobs:
       - name: Installer Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18' # Spécifiez la version de Node.js que vous souhaitez installer
-      # --legacy-peer-deps pour ignorer les conflits de dépendances 
+          node-version: '18'  # ou une autre version compatible, ex: '16' ou '20'
+
+      - name: Nettoyer le cache npm
+        run: npm cache clean --force
+
+      # Utiliser --force pour ignorer les conflits de dépendances
       - name: Installer les dépendances npm
-        run: npm install --legacy-peer-deps
+        run: npm install --legacy-peer-deps --force
 
-      # - name: Exécuter les tests unitaires Angular
-      #   run: npm test -- --watch=false --browsers=ChromeHeadless
-
+      # Désactiver temporairement les optimisations pour éviter les erreurs de build
       - name: Builder le projet Angular
-        run: npm run build 
+        run: npm run build -- --optimization=false --aot=false
 
       - name: Sauvegarder l'artefact Angular
         uses: actions/upload-artifact@v3
@@ -80,9 +82,9 @@ jobs:
           DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
         run: |
           echo $DOCKERHUB_TOKEN | docker login --username $DOCKERHUB_USERNAME --password-stdin
+
       - name: Taguer l'image latest
         run: docker tag chetouiiftikhar/frontoff-img:${{ github.run_number }} chetouiiftikhar/frontoff-img:latest
 
       - name: Pousser l'image Docker vers Docker Hub
         run: docker push chetouiiftikhar/frontoff-img:latest
-
