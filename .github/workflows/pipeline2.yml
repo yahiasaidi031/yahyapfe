@@ -44,13 +44,13 @@ jobs:
   #  needs: build-and-test-angular
 
     steps:
-      - uses: actions/checkout@v3
+      # - uses: actions/checkout@v3
 
-      - name: Download build artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: dist
-          path: dist
+      # - name: Download build artifacts
+      #   uses: actions/download-artifact@v3
+      #   with:
+      #     name: dist
+      #     path: dist
 
       - name: Build Docker image
         run: docker build -t chetouiiftikhar/frontoff-img:${{ github.sha }} .
