@@ -51,6 +51,8 @@ jobs:
 
       - name: Construction de l'image Docker Angular
         run: docker build -t chetouiiftikhar/frontoff-img:${{ github.run_number }} .
+      - name: verification
+        run: docker images
 
   create-dockerhub-secret:
     runs-on: ubuntu-latest
