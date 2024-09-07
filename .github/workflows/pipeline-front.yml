@@ -81,7 +81,7 @@ jobs:
           echo $DOCKERHUB_TOKEN | docker login --username $DOCKERHUB_USERNAME --password-stdin
 
       - name: Taguer l'image latest
-        run: docker tag chetouiiftikhar/frontoff-img:${{ github.run_number }} chetouiiftikhar/frontoff-img:${{ github.run_number }}
+        run: docker tag chetouiiftikhar/frontoff-img:${{ github.run_number }} chetouiiftikhar/frontoff-img
 
       - name: Pousser l'image Docker vers Docker Hub
-        run: docker push chetouiiftikhar/frontoff-img:${{ github.run_number }}
+        run: docker push chetouiiftikhar/frontoff-img:latest
