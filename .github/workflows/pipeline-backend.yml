@@ -3,8 +3,7 @@ name: Node CI
 on:
   push:
     branches: [ ProjectService ]
-  pull_request:
-    branches: [ ProjectService ]
+  
 
 jobs:
   test:
