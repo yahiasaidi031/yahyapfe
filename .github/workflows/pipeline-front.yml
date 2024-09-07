@@ -1,0 +1,88 @@
+name: CI/CD pour front Angular 
+
+# Déclencheurs du workflow
+on:
+  push:
+    branches: [frontOff ]
+
+# Configuration des jobs
+jobs:
+  # Job pour tester et builder projet Angular
+  test-and-build-angular:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v3
+
+      - name: Installer Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18' # Spécifiez la version de Node.js que vous souhaitez installer
+
+      - name: Installer les dépendances npm
+        run: npm install
+
+      # - name: Exécuter les tests unitaires Angular
+      #   run: npm test -- --watch=false --browsers=ChromeHeadless
+
+      - name: Builder le projet Angular
+        run: npm run build 
+
+      - name: Sauvegarder l'artefact Angular
+        uses: actions/upload-artifact@v3
+        with:
+          name: front_app
+          path: dist/
+
+  # Job pour builder l'image Docker pour le projet Angular
+  build-angular-docker-image:
+    runs-on: ubuntu-latest
+    needs: test-and-build-angular
+
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v3
+
+      - name: Télécharger l'artefact Angular
+        uses: actions/download-artifact@v3
+        with:
+          name: front_app
+          path: ./dist
+
+      - name: Construction de l'image Docker Angular
+        run: docker build -t chetouiiftikhar/frontoff-img:${{ github.run_number }} .
+
+  # Job pour créer le secret Docker Hub 
+  create-dockerhub-secret:
+    runs-on: ubuntu-latest
+    needs: build-angular-docker-image
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Donner les permissions d'exécution au script
+        run: chmod +x ./scriptDockerSecret.sh
+
+      - name: Exécuter le script de création du secret Docker Hub
+        run: ./scriptDockerSecret.sh
+
+  # Job pour pousser l'image Docker vers Docker Hub
+  push-image-dockerHub:
+    runs-on: ubuntu-latest
+    needs: create-dockerhub-secret
+
+    steps:
+      - name: Authentification à Docker Hub
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+        run: |
+          echo $DOCKERHUB_TOKEN | docker login --username $DOCKERHUB_USERNAME --password-stdin
+      - name: Taguer l'image latest
+        run: docker tag chetouiiftikhar/frontoff-img:${{ github.run_number }} chetouiiftikhar/frontoff-img:latest
+
+      - name: Pousser l'image Docker vers Docker Hub
+        run: docker push chetouiiftikhar/frontoff-img:latest
+
