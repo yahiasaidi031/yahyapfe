@@ -32,5 +32,5 @@ jobs:
       - name: Sauvegarder l'artefact Angular
         uses: actions/upload-artifact@v3
         with:
-          name: front_app
+          name: PFE-frontoff
           path: dist/
