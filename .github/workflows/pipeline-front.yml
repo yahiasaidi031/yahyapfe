@@ -53,7 +53,11 @@ jobs:
         run: docker build -t chetouiiftikhar/frontoff-img:${{ github.run_number }} .
       - name: verification
         run: docker images
-
+      - name: Taguer l'image latest
+        run: docker tag chetouiiftikhar/frontoff-img:${{ github.run_number }} chetouiiftikhar/frontoff-img:latest
+      - name: verification
+        run: docker images
+ 
   create-dockerhub-secret:
     runs-on: ubuntu-latest
     needs: build-angular-docker-image
@@ -80,8 +84,7 @@ jobs:
         run: |
           echo $DOCKERHUB_TOKEN | docker login --username $DOCKERHUB_USERNAME --password-stdin
 
-      - name: Taguer l'image latest
-        run: docker tag chetouiiftikhar/frontoff-img:${{ github.run_number }} chetouiiftikhar/frontoff-img
+     
 
       - name: Pousser l'image Docker vers Docker Hub
         run: docker push chetouiiftikhar/frontoff-img:latest
