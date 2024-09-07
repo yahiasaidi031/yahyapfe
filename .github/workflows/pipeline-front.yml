@@ -1,13 +1,10 @@
 name: CI/CD pour front Angular
 
-# Déclencheurs du workflow
 on:
   push:
     branches: [frontOff]
 
-# Configuration des jobs
 jobs:
-  # Job pour tester et builder le projet Angular
   test-and-build-angular:
     runs-on: ubuntu-latest
 
@@ -18,16 +15,17 @@ jobs:
       - name: Installer Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'  # ou une autre version compatible, ex: '16' ou '20'
+          node-version: '18'  # ou une version compatible
 
       - name: Nettoyer le cache npm
         run: npm cache clean --force
 
-      # Utiliser --force pour ignorer les conflits de dépendances
+      - name: Installer les dépendances manquantes
+        run: npm install @angular/cdk --legacy-peer-deps --force
+
       - name: Installer les dépendances npm
         run: npm install --legacy-peer-deps --force
 
-      # Désactiver temporairement les optimisations pour éviter les erreurs de build
       - name: Builder le projet Angular
         run: npm run build -- --optimization=false --aot=false
 
@@ -37,7 +35,6 @@ jobs:
           name: front_app
           path: dist/
 
-  # Job pour builder l'image Docker pour le projet Angular
   build-angular-docker-image:
     runs-on: ubuntu-latest
     needs: test-and-build-angular
@@ -55,7 +52,6 @@ jobs:
       - name: Construction de l'image Docker Angular
         run: docker build -t chetouiiftikhar/frontoff-img:${{ github.run_number }} .
 
-  # Job pour créer le secret Docker Hub 
   create-dockerhub-secret:
     runs-on: ubuntu-latest
     needs: build-angular-docker-image
@@ -70,7 +66,6 @@ jobs:
       - name: Exécuter le script de création du secret Docker Hub
         run: ./scriptDockerSecret.sh
 
-  # Job pour pousser l'image Docker vers Docker Hub
   push-image-dockerHub:
     runs-on: ubuntu-latest
     needs: create-dockerhub-secret
