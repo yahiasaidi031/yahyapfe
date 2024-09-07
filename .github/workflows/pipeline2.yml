@@ -65,7 +65,7 @@ jobs:
   push-to-dockerhub:
     runs-on: ubuntu-latest
     needs: build-docker-image
-    if: github.event.type == 'push'
+   # if: github.event.type == 'push'
     steps:
       - name: Login to Docker Hub (requires secret)
         uses: docker/login-action@v2
