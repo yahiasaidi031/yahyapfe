@@ -1,11 +1,11 @@
 
 
-FROM node:18 as builder
-WORKDIR /app
-COPY . .
-RUN npm install -g @angular/cli
-RUN npm install --force
-RUN ng build
+# FROM node:18 as builder
+# WORKDIR /app
+# COPY . .
+# RUN npm install -g @angular/cli
+# RUN npm install --force
+# RUN ng build
 
 FROM nginx:alpine
 RUN rm /etc/nginx/conf.d/default.conf
