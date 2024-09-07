@@ -19,9 +19,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18' # Spécifiez la version de Node.js que vous souhaitez installer
-
+      # --legacy-peer-deps pour ignorer les conflits de dépendances 
       - name: Installer les dépendances npm
-        run: npm install
+        run: npm install --legacy-peer-deps
 
       # - name: Exécuter les tests unitaires Angular
       #   run: npm test -- --watch=false --browsers=ChromeHeadless
