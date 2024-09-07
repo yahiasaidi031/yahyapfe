@@ -57,8 +57,7 @@ jobs:
 
       - name: Verify image build
         run: docker images
-
-  - name: Build Docker image
+      - name: Build Docker image
         run: docker build -t chetouiiftikhar/frontoff-img:${{ github.sha }} .
       - name: Verify image build
         run: docker images
