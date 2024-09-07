@@ -40,7 +40,7 @@ jobs:
   #         path: dist
 
   build-docker-image:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
   #  needs: build-and-test-angular
 
     steps:
@@ -60,7 +60,7 @@ jobs:
         run: docker tag chetouiiftikhar/frontoff-img:${{ github.sha }} chetouiiftikhar/frontoff-img:latest
 
   push-to-dockerhub:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: build-docker-image
   
     steps:
