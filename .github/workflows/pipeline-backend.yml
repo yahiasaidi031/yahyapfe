@@ -1,20 +1,34 @@
-name: Node CI
+name: CI/CD service Backend
 
 on:
   push:
     branches: [ ProjectService ]
-  
 
 jobs:
-  test:
+  #build-docker-image
+  CI:
     runs-on: self-hosted
+
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - name: Build Docker image
+        run: docker build -t chetouiiftikhar/frontoff-img:${{ github.sha }} .
+      - name: Verify image build
+        run: docker images
+      - name: Tag image for latest deployment (optional)
+        run: docker tag chetouiiftikhar/project-img:${{ github.sha }} chetouiiftikhar/project-img:latest
+
+ # push-to-dockerhub:
+  CD: 
+    runs-on: self-hosted
+    needs: CI
+  
+    steps:
+      - name: Login to Docker Hub (requires secret)
+        uses: docker/login-action@v2
         with:
-          node-version: 18
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 18
-      - run: npm install
-      - run: ng test
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+     
+      - name: Push image to Docker Hub
+        run: docker push chetouiiftikhar/project-img:latest
