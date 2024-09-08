@@ -16,10 +16,8 @@ services:
       - mongo_data:/data/db
 
   # Service Backend Node.js
-  backend:
-    build: 
-      context: ./ProjectService
-      dockerfile: Dockerfile
+  backend: 
+    images: docker push chetouiiftikhar/project-img:latest
     container_name: backend
     ports:
       - "8006:8006"
@@ -36,16 +34,14 @@ services:
       
 
   # Service Frontend Angular
-  frontend:
-    build: 
-      context: ./PFE-frontoff
-      dockerfile: Dockerfile
+  frontend: 
+    image: chetouiiftikhar/frontoff-img:latest
     container_name: frontoff
     ports:
-      - "80:80"
+      - "4200:80"
     depends_on:
       - backend
 
 volumes:
   mongo_data:
-  #  driver: local
+    driver: local
