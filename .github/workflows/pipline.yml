@@ -1,36 +1,17 @@
-name: CI/CD pour une application web de crowd funding
+name: Deploy Docker-Compose Application
 
-# Déclencheurs du workflow
 on:
   push:
     branches: [main]
 
-# Configuration des jobs
 jobs:
-  # Job pour tester et builder projet Angular
-  test-and-build-angular:
-    runs-on: ubuntu-latest
-
+  deploy:
+    runs-on: self-hosted
     steps:
-      - name: Checkout du code
-        uses: actions/checkout@v3
-
-      - name: Installer Node.js
-        uses: actions/setup-node@v3
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
-          node-version: '18' # Spécifiez la version de Node.js que vous souhaitez installer
-
-      - name: Installer les dépendances npm
-        run: npm install
-
-      # - name: Exécuter les tests unitaires Angular
-      #   run: npm test -- --watch=false --browsers=ChromeHeadless
-
-      - name: Builder le projet Angular
-        run: npm run build 
-
-      - name: Sauvegarder l'artefact Angular
-        uses: actions/upload-artifact@v3
-        with:
-          name: PFE-frontoff
-          path: dist/
+          node-version: 18
+      - name: Run Docker-Compose
+        run: |
+          docker-compose up -d
