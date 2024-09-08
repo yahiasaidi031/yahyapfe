@@ -17,7 +17,7 @@ services:
 
   # Service Backend Node.js
   backend: 
-    images: docker push chetouiiftikhar/project-img:latest
+    images: chetouiiftikhar/project-img:latest
     container_name: backend
     ports:
       - "8006:8006"
