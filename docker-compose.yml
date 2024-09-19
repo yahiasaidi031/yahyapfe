@@ -17,7 +17,7 @@ services:
 
   # Service Backend Node.js
   backend: 
-    image: chetouiiftikhar/project-img:latest
+    image: yahya184/project-img:latest
     container_name: backend
     ports:
       - "8006:8006"
@@ -35,7 +35,7 @@ services:
 
   # Service Frontend Angular
   frontend: 
-    image: chetouiiftikhar/frontoff-img:latest
+    image: yahya184/frontoff-img:latest
     container_name: frontoff
     ports:
       - "4200:80"
