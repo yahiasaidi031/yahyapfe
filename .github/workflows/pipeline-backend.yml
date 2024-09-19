@@ -12,11 +12,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Build Docker image
-        run: docker build -t chetouiiftikhar/project-img:${{ github.sha }} .
+        run: docker build -t yahya184/project-img:${{ github.sha }} .
       - name: Verify image build
         run: docker images
       - name: Tag image for latest deployment (optional)
-        run: docker tag chetouiiftikhar/project-img:${{ github.sha }} chetouiiftikhar/project-img:latest
+        run: docker tag yahya184/project-img:${{ github.sha }} yahya184/project-img:latest
 
  # push-to-dockerhub:
   CD: 
