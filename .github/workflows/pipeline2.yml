@@ -41,7 +41,7 @@ jobs:
 
   #build-docker-image
   CI:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
   #  needs: build-and-test-angular
 
     steps:
@@ -62,7 +62,7 @@ jobs:
 
  # push-to-dockerhub:
   CD: 
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     needs: CI
   
     steps:
