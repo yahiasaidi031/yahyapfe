@@ -11,7 +11,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
         with:
-          repository: https://github.com/yahiasaidi031/yahyapfe.git  # Remplace par le nom correct de ton dépôt
+          repository: git@github.com:yahiasaidi031/yahyapfe.git  # Remplace par le nom correct de ton dépôt
 
       - name: Configure Git
         run: |
@@ -53,7 +53,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          repository: https://github.com/yahiasaidi031/yahyapfe.git # Assure-toi que le dépôt est correctement cloné
+          repository: git@github.com:yahiasaidi031/yahyapfe.git # Assure-toi que le dépôt est correctement cloné
 
       - name: Build Docker image
         run: docker build -t yahya184/frontoff-img:${{ github.sha }} .
