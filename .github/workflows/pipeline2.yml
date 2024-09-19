@@ -24,6 +24,16 @@ jobs:
         with:
           node-version: '18'
 
+      - name: Install dependencies for Chrome
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libnss3 libgconf-2-4 libgtk-3-0 xvfb
+
+      - name: Start xvfb
+        run: |
+          export DISPLAY=':99.0'
+          nohup Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+
       - name: Cache Node.js modules
         uses: actions/cache@v3
         with:
@@ -36,7 +46,7 @@ jobs:
         run: npm install --legacy-peer-deps
 
       - name: Run unit tests
-        run: npm test  # Replace with your test command
+        run: npm test -- --no-watch --browsers=ChromeHeadlessNoSandbox
 
       - name: Build Angular application
         run: npm run build -- --prod
@@ -82,4 +92,5 @@ jobs:
      
       - name: Push image to Docker Hub
         run: docker push yahya184/frontoff-img:latest
+
 
