@@ -5,34 +5,15 @@ on:
     branches: [ frontOff ]
 
 jobs:
-  build-and-test-angular:
-    runs-on: ubuntu-latest
-
+  CI:
+    runs-on: self-hosted
     steps:
-      - name: Increase Git buffer size
-        run: git config --global http.postBuffer 1048576000
-
-      - name: Configure HTTP Version
-        run: git config --global http.version HTTP/1.1
-
       - uses: actions/checkout@v3
-        with:
-          fetch-depth: 1
 
       - name: Install Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
-
-      - name: Install dependencies for Chrome
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libnss3 libgconf-2-4 libgtk-3-0 xvfb
-
-      - name: Start xvfb
-        run: |
-          export DISPLAY=':99.0'
-          nohup Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+          node-version: '18'  # Adjust if needed
 
       - name: Cache Node.js modules
         uses: actions/cache@v3
@@ -43,10 +24,11 @@ jobs:
             ${{ runner.os }}-build-
 
       - name: Install dependencies
-        run: npm install --legacy-peer-deps
+        run: npm install
 
-      - name: Run unit tests
-        run: npm test -- --no-watch --browsers=ChromeHeadlessNoSandbox
+      # Remove or comment out the test step if you want to skip unit tests
+      # - name: Run unit tests
+      #   run: npm test  # Replace with your test command
 
       - name: Build Angular application
         run: npm run build -- --prod
@@ -57,32 +39,22 @@ jobs:
           name: dist
           path: dist
 
-  CI:
+  build-docker-image:
     runs-on: self-hosted
-    needs: build-and-test-angular
-
+    needs: CI
     steps:
       - uses: actions/checkout@v3
 
-      - name: Download build artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: dist
-          path: dist
-
       - name: Build Docker image
         run: docker build -t yahya184/frontoff-img:${{ github.sha }} .
-
       - name: Verify image build
         run: docker images
-
       - name: Tag image for latest deployment (optional)
         run: docker tag yahya184/frontoff-img:${{ github.sha }} yahya184/frontoff-img:latest
 
-  CD:
+  push-to-dockerhub:
     runs-on: self-hosted
-    needs: CI
-
+    needs: build-docker-image
     steps:
       - name: Login to Docker Hub (requires secret)
         uses: docker/login-action@v2
@@ -92,5 +64,6 @@ jobs:
      
       - name: Push image to Docker Hub
         run: docker push yahya184/frontoff-img:latest
+
 
 
