@@ -10,26 +10,24 @@ jobs:
     runs-on: self-hosted
 
     steps:
-      # Configurer Git pour les gros transferts
       - name: Set Git configuration
         run: |
-          git config --global http.postBuffer 524288000  # Augmente le buffer à 500 Mo
-          git config --global http.maxRequestBuffer 1048576000  # Augmente le buffer de la requête à 1 Go
+          git config --global http.postBuffer 524288000
+          git config --global http.maxRequestBuffer 1048576000
           git config --global http.lowSpeedLimit 0
           git config --global http.lowSpeedTime 999999
+          git config --global fetch.recurseSubmodules false
+          git config --global core.fsyncObjectFiles 0
+          git config --global core.preloadIndex true
 
-      # Cloner le dépôt
       - uses: actions/checkout@v3
 
-      # Construire l'image Docker
       - name: Build Docker image
         run: docker build -t frontoff-img:${{ github.sha }} .
         
-      # Vérifier la construction de l'image
       - name: Verify image build
         run: docker images
         
-      # Taguer l'image pour le déploiement
       - name: Tag image for latest deployment (optional)
         run: docker tag frontoff-img:${{ github.sha }} frontoff-img:latest
 
@@ -38,14 +36,12 @@ jobs:
     needs: CI
   
     steps:
-      # Se connecter à Docker Hub
       - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
      
-      # Pousser l'image vers Docker Hub
       - name: Push image to Docker Hub
         run: docker push frontoff-img:latest
 
