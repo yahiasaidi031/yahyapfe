@@ -9,22 +9,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Augmenter le buffer HTTP pour Git
       - name: Increase Git buffer size
         run: git config --global http.postBuffer 1048576000
 
-      # Forcer l'utilisation de HTTP/1.1
       - name: Configure HTTP Version
         run: git config --global http.version HTTP/1.1
 
       - uses: actions/checkout@v3
         with:
-          fetch-depth: 1  # Récupère seulement le dernier commit pour minimiser la taille du clone
+          fetch-depth: 1
 
       - name: Install Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'  # Ajuster si nécessaire
+          node-version: '18'
 
       - name: Cache Node.js modules
         uses: actions/cache@v3
@@ -35,10 +33,10 @@ jobs:
             ${{ runner.os }}-build-
 
       - name: Install dependencies
-        run: npm install
+        run: npm install --legacy-peer-deps
 
       - name: Run unit tests
-        run: npm test  # Remplace par la commande de test appropriée
+        run: npm test  # Replace with your test command
 
       - name: Build Angular application
         run: npm run build -- --prod
@@ -84,3 +82,4 @@ jobs:
      
       - name: Push image to Docker Hub
         run: docker push yahya184/frontoff-img:latest
+
