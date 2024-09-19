@@ -41,7 +41,7 @@ jobs:
 
   #build-docker-image
   CI:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
   #  needs: build-and-test-angular
 
     steps:
@@ -54,15 +54,15 @@ jobs:
       #     path: dist
      
       - name: Build Docker image
-        run: docker build -t chetouiiftikhar/frontoff-img:${{ github.sha }} .
+        run: docker build -t yahya184/frontoff-img:${{ github.sha }} .
       - name: Verify image build
         run: docker images
       - name: Tag image for latest deployment (optional)
-        run: docker tag chetouiiftikhar/frontoff-img:${{ github.sha }} chetouiiftikhar/frontoff-img:latest
+        run: docker tag yahya184/frontoff-img:${{ github.sha }} yahya184/frontoff-img:latest
 
  # push-to-dockerhub:
   CD: 
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: CI
   
     steps:
@@ -73,4 +73,4 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
      
       - name: Push image to Docker Hub
-        run: docker push chetouiiftikhar/frontoff-img:latest
+        run: docker push yahya184/frontoff-img:latest
